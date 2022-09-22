@@ -12,8 +12,8 @@ global.appRoot = path.resolve(__dirname);
 global.appName = "Kwiz-API";
 
 mongoose.connect(process.env.MONGO_ATLAS_URL, {useUnifiedTopology: true, useNewUrlParser: true})
-.then(() => console.log("successfully connected to database"))
-.catch(error => console.log(`unable to connect to database. {Issue]: ${error}`));
+.then(() => console.log(`[Database connection]: Connected correctly to MongoDB server for ${appName}..`))
+.catch(error => console.error(`Connection error to MongoDB Server. [Issue]: ${error}`));;
 
 const app = express();
 
