@@ -11,16 +11,14 @@ const path = require('path');
 global.appRoot = path.resolve(__dirname);
 global.appName = "Kwiz-API";
 
-// connect db here
+mongoose.connect(process.env.MONGO_ATLAS_URL, {useUnifiedTopology: true, useNewUrlParser: true})
+.then(() => console.log("successfully connected to database"))
+.catch(error => console.log(`unable to connect to database. {Issue]: ${error}`));
 
 const app = express();
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  res.header("Accept", "application/json");
-  res.header("Access-Control-Allow-Credentials", 'true');
   next();
 });
 
