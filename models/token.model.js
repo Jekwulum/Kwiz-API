@@ -8,14 +8,6 @@ const tokenSchema = new Schema({
     type: String,
     required: true
   },
-  expired: {
-    type: Boolean,
-    default: false
-  },
-  expireDate: {
-    type: Date,
-    default: moment().add(1, "hour")
-  },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     refPath: 'UsersRef',
