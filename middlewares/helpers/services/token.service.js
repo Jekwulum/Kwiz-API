@@ -1,7 +1,6 @@
 const config = process.env;
 const jwt = require('jsonwebtoken');
 const TokenModel = require('../../../models/token.model');
-const UserModel = require('../../../models/user.model');
 
 const tokenService = {
   generateToken: (userId, email, UsersRef) => {
@@ -13,11 +12,14 @@ const tokenService = {
     return token;
   },
 
-  verifyToken: (req, res, next) => {
+  verifyToken: async (req, res, next) => {
     if (req.headers && req.header['authorization']) {
       const token = req.body.token || req.query.token || req.headers['Authorization'];
 
       try {
+        tokenExists = await TokenModel.findOne({ token });
+        if (!tokenExists) res.status(400).json({ status: "FAILED", message: "Invalid Token" });
+        
         req.user = jwt.verify(token, config.TOKEN_KEY);
         console.log("req.user: ", req.user);
       } catch (error) {
