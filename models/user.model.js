@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
-const moment = require('moment');
 const uniqueValidator = require('mongoose-unique-validator');
-const { string } = require('joi');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
