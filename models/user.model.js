@@ -1,9 +1,15 @@
 const mongoose = require('mongoose');
 const moment = require('moment');
 const uniqueValidator = require('mongoose-unique-validator');
+const { string } = require('joi');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
+  userId: {
+    type: String,
+    required: true,
+    unique: true
+  },
   email: {
     type: String,
     required: true,
@@ -30,7 +36,12 @@ const userSchema = new Schema({
     type: Boolean,
     required: true,
     default: true
-  }
+  },
+  is_admin: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
 }, {
   timestamps: true
 });
