@@ -5,18 +5,18 @@ const UserController = require('../controllers/user.controller');
 const validator = require('../middlewares/helpers/services/validator.service');
 
 router.post("/",
-  // TokenService.verifyToken,
+  TokenService.verifyToken,
   validator("authValidators", "createUser"),
   (req, res) => UserController.createUser(req, res)
 );
 
 router.get("/email/:email",
-  // TokenService.verifyToken,
+  TokenService.verifyToken,
   (req, res) => UserController.getByEmail(req, res)
 );
 
 router.get("/:id",
-  // TokenService.verifyToken,
+  TokenService.verifyToken,
   (req, res) => UserController.getById(req, res)
 );
 
@@ -26,7 +26,7 @@ router.get("/",
 );
 
 router.delete("/:id",
-  // TokenService.verifyToken,
+  TokenService.verifyToken,
   (req, res) => UserController.delete(req, res)
 );
 

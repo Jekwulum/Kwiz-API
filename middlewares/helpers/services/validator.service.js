@@ -1,5 +1,6 @@
 const authValidators = require('../validators/auth.validator');
 const createError = require('http-errors');
+const questionsValidator = require('../validators/question.validator');
 
 module.exports = (validatorType, method) => {
   const validator = getValidator(validatorType, method);
@@ -25,4 +26,5 @@ module.exports = (validatorType, method) => {
 
 const getValidator = (validatorType, method) => {
   if (validatorType === "authValidators") return authValidators[method];
+  if (validatorType === 'questionValidators') return questionsValidator[method];
 };

@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const path = require('path');
 
 const authRouter = require('./routes/auth.route');
+const questionRouter = require('./routes/questions.route');
 const userRouter = require('./routes/user.route');
 
 
@@ -36,6 +37,7 @@ app.use(express.json({ limit: "50mb" }));
 
 app.get("/", (req, res) => { res.json("hello world") });
 app.use('/auth', authRouter);
+app.use('/quiz', questionRouter);
 app.use('/user', userRouter);
 
 app.use((req, res, next) => {

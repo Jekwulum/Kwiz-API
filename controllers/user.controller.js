@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-const { default: mongoose } = require('mongoose');
 const config = process.env;
 const { databaseError } = require('../middlewares/helpers/responses/database.response');
 const TokenService = require('../middlewares/helpers/services/token.service');
