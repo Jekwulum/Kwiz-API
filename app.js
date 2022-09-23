@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const path = require('path');
 
+const authRouter = require('./routes/auth.route');
 const userRouter = require('./routes/user.route');
 
 
@@ -34,7 +35,9 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.json({ limit: "50mb" }));
 
 app.get("/", (req, res) => { res.json("hello world") });
+app.use('/auth', authRouter);
 app.use('/user', userRouter);
+
 app.use((req, res, next) => {
   next(createError(404, "This URL does not exist!"));
 });

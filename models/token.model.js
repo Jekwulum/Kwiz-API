@@ -9,7 +9,7 @@ const tokenSchema = new Schema({
     required: true
   },
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     refPath: 'UsersRef',
     required: true
   },
