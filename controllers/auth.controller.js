@@ -26,6 +26,14 @@ const AuthController = {
         })
       }
     });
+  },
+
+  logout: (req, res) => {
+    const userId = TokenService.getValue(req, 'userId');
+    TokenModel.deleteMany({ userId }, async (err) => {
+      if (err) res.status(400).json({ status: "FAILED", message: "Logout failed" })
+      else res.status(200).json({ status: "SUCCESS", message: "Logout successful" })
+    })
   }
 };
 

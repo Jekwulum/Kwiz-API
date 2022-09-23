@@ -3,6 +3,12 @@ const jwt = require('jsonwebtoken');
 const TokenModel = require('../../../models/token.model');
 
 const tokenService = {
+  bearerSplit: token => token.split(' ')[1],
+
+  decodeToken: req => jwt.decode(tokenService.bearerSplit(req.headers['authorization']), process.env.SECRET_TOKEN),
+
+  getValue: (req, key) => tokenService.decodeToken(req)[key],
+
   generateToken: async (userId, email, UsersRef) => {
     const token = jwt.sign({ userId, email }, config.TOKEN_KEY, { expiresIn: "2h" });
     TokenModel.create({ token, userId, UsersRef }, (err, doc) => {
@@ -19,7 +25,7 @@ const tokenService = {
       try {
         tokenExists = await TokenModel.findOne({ token });
         if (!tokenExists) return res.status(400).json({ status: "FAILED", message: "Invalid Token" });
-        
+
         req.user = jwt.verify(token, config.TOKEN_KEY);
         console.log("req.user: ", req.user);
       } catch (error) {
