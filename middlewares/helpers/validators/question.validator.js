@@ -3,8 +3,8 @@ const Joi = require('joi');
 
 const addQuestion = Joi.object({
   question: Joi.string().required(),
-  code: Joi.string().required(),
-  players: Joi.array()
+  answer: Joi.string().required(),
+  points: Joi.number().required()
 });
 
 module.exports = { addQuestion };

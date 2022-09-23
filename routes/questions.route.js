@@ -8,6 +8,10 @@ router.get('/',
   (req, res) => QuestionController.get(req, res)
 );
 
-module.exports = router;
+router.post('/',
+  TokenService.verifyToken,
+  validator("questionValidators", "addQuestion"),
+  (req, res) => QuestionController.create(req, res)
+);
 
-// validator("questionValidators", "addQuestion")
+module.exports = router;

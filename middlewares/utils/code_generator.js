@@ -1,4 +1,4 @@
-const generateCode = (length) => {
+const generateCode = (length = 6) => {
   let result = '';
   let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let charactersLength = characters.length;
