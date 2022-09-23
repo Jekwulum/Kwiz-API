@@ -11,7 +11,7 @@ const UserController = {
 
       if (error) {
         const response = databaseError(error);
-        res.status(response.status).json({ status: response.message });
+        res.status(response.status).json({ status: "FAILED", message: response.message });
       } else if (userExists) res.status(400).json({ status: "FAILED", message: "User already exists" })
       else {
         bcrypt.genSalt(Number(config.SALT_RATE), (saltError, salt) => {

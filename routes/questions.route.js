@@ -14,4 +14,10 @@ router.post('/',
   (req, res) => QuestionController.create(req, res)
 );
 
+router.patch('/add-players/:code',
+  TokenService.verifyToken,
+  validator("questionValidators", "updateQuestion"),
+  (req, res) => QuestionController.addPlayers(req, res)
+);
+
 module.exports = router;

@@ -24,6 +24,31 @@ const QuestionController = {
     } catch (error) {
       res.status(500).json({ status: "FAILED", message: error });
     }
+  },
+
+  addPlayers: async (req, res) => {
+    QuestionModel.findOne({ code: req.params.code }, async (err, doc) => {
+      if (err || !doc) res.status(400).json({ message: "Record not found", status: "FAILED" })
+      else {
+        let otherPlayers = [];
+        let playersArr = doc.players;
+        for (let player of req.body.players) {
+          if (!playersArr.some(playerObj => playerObj.player === player)) {
+            let newPlayer = { player, score: 0 }
+            playersArr.push(newPlayer);
+          } else otherPlayers.push(player);
+        };
+
+        QuestionModel.updateOne({ code: req.params.code }, { players: playersArr }, (err) => {
+          if (err) res.status(400).json({ status: "FAILED", message: err + "here" })
+          else {
+            let message = "Player(s) successfully added. ";
+            if (otherPlayers.length > 0) message += `${otherPlayers.join(', ')} already selected`;
+            res.status(200).json({ status: "SUCCESS", message });
+          }
+        });
+      }
+    });
   }
 };
 

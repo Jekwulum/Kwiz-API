@@ -25,7 +25,7 @@ const questionsSchema = new Schema({
     required: true
   },
   players: {
-    type: [{ player: String, score: Number }]
+    type: [{ player: { type: String, unique: true }, score: { type: Number } }]
   }
 }, {
   timestamps: true

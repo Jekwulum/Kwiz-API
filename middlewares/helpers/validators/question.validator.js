@@ -7,4 +7,8 @@ const addQuestion = Joi.object({
   points: Joi.number().required()
 });
 
-module.exports = { addQuestion };
+const updateQuestion = Joi.object({
+  players: Joi.array().required()
+});
+
+module.exports = { addQuestion, updateQuestion };
