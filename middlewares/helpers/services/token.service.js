@@ -27,7 +27,6 @@ const tokenService = {
         if (!tokenExists) return res.status(400).json({ status: "FAILED", message: "Invalid Token" });
 
         req.user = jwt.verify(token, config.TOKEN_KEY);
-        console.log("req.user: ", req.user);
       } catch (error) {
         return res.status(401).json({ status: "FAILED", message: "Invalid Token" });
       }
