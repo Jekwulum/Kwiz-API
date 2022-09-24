@@ -6,11 +6,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const path = require('path');
+const YAML = require('yamljs');
 
 const authRouter = require('./routes/auth.route');
 const questionRouter = require('./routes/questions.route');
 const userRouter = require('./routes/user.route');
 
+const swaggerJsDocs = YAML.load('./middlewares/utils/api.yaml');
+const swaggerUi = require('swagger-ui-express');
 
 global.appRoot = path.resolve(__dirname);
 global.appName = "Kwiz-API";
@@ -34,8 +37,9 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.json({ limit: "50mb" }));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsDocs));
 
-app.get("/", (req, res) => { res.json("hello world") });
+app.get("/", (req, res) => { res.redirect('/api-docs') });
 app.use('/auth', authRouter);
 app.use('/quiz', questionRouter);
 app.use('/user', userRouter);

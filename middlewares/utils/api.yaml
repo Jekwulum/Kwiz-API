@@ -1,0 +1,17 @@
+swagger: "2.0"
+info:
+  title: Kwiz API
+  description: This API is to facilitate running a quiz appplication
+  version: 1.0
+  contact:
+    email: charlesnwoye2@gmail.com
+  license:
+    name: Apache 2.0
+    url: "http://apache.org/"
+  servers:
+    - url: "http://localhost:4000/"
+      description: This is the local server
+    - url: "http://ahostedplatforminthefuture.com"
+      description: This is the hosted server
+
+schemes: [http, https]
