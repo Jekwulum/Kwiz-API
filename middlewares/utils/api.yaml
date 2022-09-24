@@ -15,3 +15,237 @@ info:
       description: This is the hosted server
 
 schemes: [http, https]
+
+paths:
+  /auth/login:
+    post:
+      summary: Logs in a user
+      tags:
+        - Auth
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          schema:
+            $ref: "#components/schemas/Login"
+      responses:
+        200:
+          description: Created
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                access:
+                  type: string
+                  description: access token
+        400:
+          description: Failed
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                message:
+                  type: string
+  /auth/logout:
+    post:
+      summary: Logs out a user
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Created
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                access:
+                  type: string
+                  description: access token
+        400:
+          description: Failed
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                message:
+                  type: string
+
+  /quiz/:
+    get:
+      summary: Fetches all questions
+      tags:
+        - Questions
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                data:
+                  type: array
+              example: { status: "SUCCESS", data: [] }
+
+    post:
+      summary: Creates a new question
+      tags:
+        - Questions
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          schema:
+            $ref: "#components/schemas/Question"
+      responses:
+        201:
+          description: Created
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                message:
+                  type: string
+              example:
+                { status: "SUCCESS", access: string, message: "Question added" }
+        400:
+          description: Failed
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                message:
+                  type: string
+        500:
+          description: Internal server Error
+
+  /quiz/add-players/{code}:
+    patch:
+      summary: Adds Players
+      tags:
+        - Questions
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          schema:
+            type: object
+            required:
+              - players
+            properties:
+              players:
+                type: array
+                items:
+                  type: string
+            example: { players: ["John", "Faruk", "Pragya"] }
+      responses:
+        200:
+          description: Success
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                message:
+                  type: string
+
+  /quiz/update-scores/{code}:
+    patch:
+      summary: Updates Players' scores
+      tags:
+        - Questions
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          schema:
+            type: object
+            required:
+              - players
+            properties:
+              players:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    player:
+                      type: string
+                    score:
+                      type: integer
+            example:
+              {
+                players:
+                  [
+                    { "player": "John", "score": 1 },
+                    { "player": "Pragya", "score": 3 },
+                  ],
+              }
+      200:
+        description: Success
+        content:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              message:
+                type: string
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Login:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    Question:
+      type: object
+      required:
+        - question
+        - answer
+        - points
+      properties:
+        question:
+          type: string
+        answer:
+          type: string
+        points:
+          type: integer
+# security:
+#   - bearerAuth: []

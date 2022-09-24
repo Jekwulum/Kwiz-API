@@ -54,7 +54,7 @@ const QuestionController = {
 
   updateScores: async (req, res) => {
     QuestionModel.findOne({ code: req.params.code }, async (err, doc) => {
-      if (err || !doc) res.status(400).json({ message: "Record not found", status: "FAILED" })
+      if (err || !doc) res.status(404).json({ message: "Record not found", status: "FAILED" })
       else {
         let oldPlayersArr = doc.players;
         let newPlayersArr = req.body.players;
