@@ -57,14 +57,14 @@ const UserController = {
   getByEmail: async (req, res) => {
     const data = await UserModel.findOne({ email: req.params.email });
     delete data.password;
-    if (data) res.status(200).json({ status: "SUCCEsS", message: "Successfully fetched data", data })
+    if (data) res.status(200).json({ status: "SUCCESS", message: "Successfully fetched data", data })
     else res.status(400).json({ status: "FAILED", message: "Record not found" });
   },
 
   getById: async (req, res) => {
     const data = await UserModel.findOne({ userId: req.params.id });
     delete data.password;
-    if (data) res.status(200).json({ status: "SUCCEsS", message: "Successfully fetched data", data })
+    if (data) res.status(200).json({ status: "SUCCESS", message: "Successfully fetched data", data })
     else res.status(400).json({ status: "FAILED", message: "Record not found" });
   },
 
@@ -74,7 +74,7 @@ const UserController = {
       UserModel.deleteOne({ _id: req.params.id })
         .then(() => {
           console.log("deleted");
-          return res.status(200).json({ status: "SUCCESS", message: "Successful" });
+          return res.status(200).json({ status: "SUCCESS", message: "Delete Successful" });
         })
         .catch(error => {
           console.log(error);

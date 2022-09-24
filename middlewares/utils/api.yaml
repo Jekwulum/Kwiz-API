@@ -218,7 +218,7 @@ paths:
     post:
       summary: Registers a user
       tags:
-        - User
+        - Users
       consumes:
         - application/json
       parameters:
@@ -247,6 +247,63 @@ paths:
                   type: string
                 message:
                   type: string
+    get:
+      summary: Fetches all users
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                data:
+                  type: array
+              example: { status: "SUCCESS", data: [], message: string }
+
+  /user/{id}:
+    get:
+      summary: Fetches a user by ID
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                data:
+                  type: array
+              example: { status: "SUCCESS", data: {}, message: string }
+  /user/email/{id}:
+    get:
+      summary: Fetches a user by email
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                data:
+                  type: array
+              example: { status: "SUCCESS", data: {}, message: string }
 
 components:
   securitySchemes:
