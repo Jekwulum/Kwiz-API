@@ -59,16 +59,15 @@ paths:
         - bearerAuth: []
       responses:
         200:
-          description: Created
+          description: Success
           content:
             schema:
               type: object
               properties:
                 status:
                   type: string
-                access:
+                message:
                   type: string
-                  description: access token
         400:
           description: Failed
           content:
@@ -215,6 +214,40 @@ paths:
               message:
                 type: string
 
+  /user:
+    post:
+      summary: Registers a user
+      tags:
+        - User
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          schema:
+            $ref: "#components/schemas/User"
+      responses:
+        201:
+          description: Created
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                message:
+                  type: string
+              example: { status: "SUCCESS", access: string }
+        400:
+          description: Failed
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                message:
+                  type: string
+
 components:
   securitySchemes:
     bearerAuth:
@@ -247,5 +280,25 @@ components:
           type: string
         points:
           type: integer
+
+    User:
+      type: object
+      required:
+        - email
+        - firstName
+        - lastName
+        - password
+        - re_password
+      properties:
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        password:
+          type: string
+        re_password:
+          type: string
 # security:
 #   - bearerAuth: []
