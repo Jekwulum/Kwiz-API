@@ -71,7 +71,7 @@ const UserController = {
   delete: async (req, res) => {
     const userExists = await UserModel.findOne({ userId: req.params.id });
     if (userExists) {
-      UserModel.deleteOne({ _id: req.params.id })
+      UserModel.deleteOne({ userId: req.params.id })
         .then(() => {
           console.log("deleted");
           return res.status(200).json({ status: "SUCCESS", message: "Delete Successful" });

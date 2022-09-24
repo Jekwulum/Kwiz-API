@@ -285,6 +285,25 @@ paths:
                 data:
                   type: array
               example: { status: "SUCCESS", data: {}, message: string }
+    delete:
+      summary: Deletes a user by ID
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                data:
+                  type: array
+              example: { status: "SUCCESS", data: {}, message: string }
+  
   /user/email/{id}:
     get:
       summary: Fetches a user by email
