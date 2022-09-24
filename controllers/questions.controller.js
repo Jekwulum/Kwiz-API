@@ -1,6 +1,7 @@
 const { generateCode } = require('../middlewares/utils/code_generator');
 const { databaseError } = require('../middlewares/helpers/responses/database.response');
 const QuestionModel = require('../models/questions.model');
+const { update } = require('../models/questions.model');
 
 const QuestionController = {
   get: async (req, res) => {
@@ -49,6 +50,31 @@ const QuestionController = {
         });
       }
     });
+  },
+
+  updateScores: async (req, res) => {
+    QuestionModel.findOne({ code: req.params.code }, async (err, doc) => {
+      if (err || !doc) res.status(400).json({ message: "Record not found", status: "FAILED" })
+      else {
+        let oldPlayersArr = doc.players;
+        let newPlayersArr = req.body.players;
+
+        let updatedArr = oldPlayersArr.reduce((acc, curr) => {
+          const exists = newPlayersArr.find((newPlayerObj) => curr.player == newPlayerObj.player);
+          if (exists) {
+            curr.score += exists.score;
+            acc.push(curr);
+          } else acc.push(curr);
+
+          return acc;
+        }, []);
+        
+        QuestionModel.updateOne({ code: req.params.code }, { players: updatedArr }, (err) => {
+          if (err) res.status(400).json({ status: "FAILED", message: err });
+          else res.status(200).json({ status: "SUCCESS", message: "Records successfully updated" });
+        });
+      }
+    })
   }
 };
 

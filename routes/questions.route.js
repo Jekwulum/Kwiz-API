@@ -20,4 +20,9 @@ router.patch('/add-players/:code',
   (req, res) => QuestionController.addPlayers(req, res)
 );
 
+router.patch('/update-scores/:code',
+  TokenService.verifyToken,
+  (req, res) => QuestionController.updateScores(req, res)
+);
+
 module.exports = router;
