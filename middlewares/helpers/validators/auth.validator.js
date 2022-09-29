@@ -14,4 +14,9 @@ const login = Joi.object({
   password: Joi.string().required(),
 });
 
-module.exports = { createUser, login };
+const resetPassword = Joi.object({
+  password: Joi.string().required(),
+  re_password: Joi.any().equal(Joi.ref('password')).required().options({ messages: { 'any.only': 'passwords do not match' } }),
+});
+
+module.exports = { createUser, login, resetPassword };

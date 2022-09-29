@@ -13,4 +13,10 @@ router.post('/logout',
   (req, res) => AuthController.logout(req, res)
 );
 
+router.post('/reset-password',
+  TokenService.verifyToken,
+  validator("authValidators", "resetPassword"),
+  AuthController.resetPassword
+);
+
 module.exports = router;

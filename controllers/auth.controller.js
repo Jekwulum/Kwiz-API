@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const config = process.env;
 const TokenService = require('../middlewares/helpers/services/token.service');
 const TokenModel = require('../models/token.model');
 const UserModel = require('../models/user.model');
@@ -34,6 +35,27 @@ const AuthController = {
       if (err) res.status(400).json({ status: "FAILED", message: "Logout failed" })
       else res.status(200).json({ status: "SUCCESS", message: "Logout successful" })
     })
+  },
+
+  resetPassword: (req, res) => {
+    const userId = req.user['userId'];
+    bcrypt.genSalt(Number(config.SALT_RATE), async (saltError, salt) => {
+      if (saltError) res.status(400).json({ status: "FAILED", message: saltError });
+      else {
+        bcrypt.hash(req.body.password, salt, async (hashError, hash) => {
+          if (hashError) res.status(400).json({ status: "FAILED", message: `FAILURE, Password not found ${error}` });
+          else {
+            UserModel.findOneAndUpdate({ userId }, { password: hash }, { new: true }, (err, doc) => {
+              if (err) {
+                const response = databaseError(err);
+                res.status(response.status).json({ status: "FAILED", message: response.message });
+              }
+              else res.status(200).json({ status: "SUCCESS", message: "password successfully changed" });
+            });
+          }
+        });
+      }
+    });
   }
 };
 
