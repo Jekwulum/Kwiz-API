@@ -78,6 +78,40 @@ paths:
                   type: string
                 message:
                   type: string
+  /auth/reset-password:
+    post:
+      summary: Resets a user's password
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          schema:
+            $ref: "#components/schemas/ResetPassword"
+      responses:
+        200:
+          description: Success
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                message:
+                  type: string
+        400:
+          description: Failed
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                message:
+                  type: string
 
   /quiz/:
     get:
@@ -341,6 +375,17 @@ components:
         email:
           type: string
         password:
+          type: string
+    
+    ResetPassword:
+      type: object
+      required:
+        - password
+        - re_password
+      properties:
+        password:
+          type: string
+        re_password:
           type: string
 
     Question:
