@@ -11,6 +11,8 @@ const QuestionController = {
 
   create: async (req, res) => {
     let data = req.body;
+    if (!data.options.includes(data.answer)) return res.status(400).json({ status: "FAILED", message: "Answer not in options" });
+    
     data.userId = req.user.userId;
     data.code = generateCode();
 
@@ -68,7 +70,7 @@ const QuestionController = {
 
           return acc;
         }, []);
-        
+
         QuestionModel.updateOne({ code: req.params.code }, { players: updatedArr }, (err) => {
           if (err) res.status(400).json({ status: "FAILED", message: err });
           else res.status(200).json({ status: "SUCCESS", message: "Records successfully updated" });

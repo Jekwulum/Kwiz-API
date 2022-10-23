@@ -16,6 +16,10 @@ const questionsSchema = new Schema({
     type: String,
     required: true
   },
+  options: {
+    type: [String],
+    required: true
+  },
   points: {
     type: Number,
     required: true
