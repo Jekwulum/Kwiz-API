@@ -1,7 +1,6 @@
 const { generateCode } = require('../middlewares/utils/code_generator');
 const { databaseError } = require('../middlewares/helpers/responses/database.response');
 const QuestionModel = require('../models/questions.model');
-const { update } = require('../models/questions.model');
 
 const QuestionController = {
   get: async (req, res) => {
