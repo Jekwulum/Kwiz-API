@@ -8,6 +8,11 @@ router.get('/',
   (req, res) => QuestionController.get(req, res)
 );
 
+router.get('/:code',
+  TokenService.verifyToken,
+  (req, res) => QuestionController.getByCode(req, res)
+);
+
 router.post('/',
   TokenService.verifyToken,
   validator("questionValidators", "addQuestion"),

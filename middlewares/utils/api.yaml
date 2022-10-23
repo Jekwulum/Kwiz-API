@@ -158,7 +158,33 @@ paths:
                   type: string
               example:
                 { status: "SUCCESS", access: string, message: "Question added" }
-        400:
+
+  /quiz/{code}:
+    get:
+      summary: Fetches Question by code
+      tags:
+        - Questions
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                data:
+                  type: array
+              example:
+                {
+                  status: "SUCCESS",
+                  message: "Successfully fetched record",
+                  data: [],
+                }
+
+        404:
           description: Failed
           content:
             schema:
@@ -168,8 +194,12 @@ paths:
                   type: string
                 message:
                   type: string
-        500:
-          description: Internal server Error
+              example:
+                {
+                  status: "FAILED",
+                  access: string,
+                  message: "Record not found",
+                }
 
   /quiz/add-players/{code}:
     patch:
@@ -337,7 +367,7 @@ paths:
                 data:
                   type: array
               example: { status: "SUCCESS", data: {}, message: string }
-  
+
   /user/email/{id}:
     get:
       summary: Fetches a user by email
@@ -376,7 +406,7 @@ components:
           type: string
         password:
           type: string
-    
+
     ResetPassword:
       type: object
       required:

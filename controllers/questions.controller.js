@@ -9,10 +9,17 @@ const QuestionController = {
     res.status(200).json({ status: "SUCCESS", message: "Successfully fetched all data", data });
   },
 
+  getByCode: async (req, res) => {
+    QuestionModel.findOne({ code: req.params.code }, async (err, doc) => {
+      if (err || !doc) res.status(404).json({ message: "Record not found", status: "FAILED" })
+      else res.status(200).json({status: "SUCCESS", message: "Successfully fetched record", data: doc});
+    });
+  },
+
   create: async (req, res) => {
     let data = req.body;
     if (!data.options.includes(data.answer)) return res.status(400).json({ status: "FAILED", message: "Answer not in options" });
-    
+
     data.userId = req.user.userId;
     data.code = generateCode();
 
@@ -31,7 +38,7 @@ const QuestionController = {
 
   addPlayers: async (req, res) => {
     QuestionModel.findOne({ code: req.params.code }, async (err, doc) => {
-      if (err || !doc) res.status(400).json({ message: "Record not found", status: "FAILED" })
+      if (err || !doc) res.status(404).json({ message: "Record not found", status: "FAILED" })
       else {
         let otherPlayers = [];
         let playersArr = doc.players;
