@@ -393,12 +393,15 @@ components:
       required:
         - question
         - answer
+        - options
         - points
       properties:
         question:
           type: string
         answer:
           type: string
+        options:
+          type: array
         points:
           type: integer
 
