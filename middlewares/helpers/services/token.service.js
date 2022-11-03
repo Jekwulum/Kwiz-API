@@ -19,19 +19,19 @@ const tokenService = {
   },
 
   verifyToken: async (req, res, next) => {
+    let token;
     if (req.header && req.headers['authorization']) {
-      const token = req.headers['authorization'].split(" ")[1];
+      token = req.headers['authorization'].split(" ")[1];
+    }
+    else return res.status(404).json({ status: "FAILED", message: "Error occurred, validation token not found" });
 
-      try {
-        tokenExists = await TokenModel.findOne({ token });
-        if (!tokenExists) return res.status(400).json({ status: "FAILED", message: "Invalid Token" });
-
-        req.user = jwt.verify(token, config.TOKEN_KEY);
-      } catch (error) {
-        return res.status(401).json({ status: "FAILED", message: "Invalid Token" });
-      }
-
-    } else return res.status(404).json({ status: "FAILED", message: "Error occurred, validation token not found" });
+    try {
+      tokenExists = await TokenModel.findOne({ token });
+      if (!tokenExists) return res.status(400).json({ status: "FAILED", message: "Invalid Token" });
+      req.user = jwt.verify(token, config.TOKEN_KEY);
+    } catch (error) {
+      return res.status(401).json({ status: "FAILED", message: "Invalid Token" });
+    }
 
     return next();
   }

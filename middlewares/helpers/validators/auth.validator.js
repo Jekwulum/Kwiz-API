@@ -19,4 +19,8 @@ const resetPassword = Joi.object({
   re_password: Joi.any().equal(Joi.ref('password')).required().options({ messages: { 'any.only': 'passwords do not match' } }),
 });
 
-module.exports = { createUser, login, resetPassword };
+const forgotPassword = Joi.object({
+  email: Joi.string().email({ tlds: { allow: false } }),
+});
+
+module.exports = { createUser, login, resetPassword, forgotPassword };
