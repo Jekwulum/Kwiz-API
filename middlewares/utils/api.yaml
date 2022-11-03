@@ -80,7 +80,7 @@ paths:
                   type: string
   /auth/reset-password:
     post:
-      summary: Resets a user's password
+      summary: Changes a user's password
       tags:
         - Auth
       security:
@@ -103,6 +103,64 @@ paths:
                 message:
                   type: string
         400:
+          description: Failed
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                message:
+                  type: string
+  /auth/forgot-password:
+    post:
+      summary: Genrate a reset password link for the user to reset the password
+      tags:
+        - Auth
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          schema:
+            $ref: "#components/schemas/ForgotPassword"
+      responses:
+        200:
+          description: Success
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                message:
+                  type: string
+        400:
+          description: Failed
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                message:
+                  type: string
+  /auth/reset-forgot-password/{resetCode}:
+    get:
+      summary: Resets a user's password
+      tags:
+        - Auth
+      responses:
+        200:
+          description: Success
+          content:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                message:
+                  type: string
+        404:
           description: Failed
           content:
             schema:
@@ -416,6 +474,14 @@ components:
         password:
           type: string
         re_password:
+          type: string
+
+    ForgotPassword:
+      type: object
+      required:
+        - email
+      properties:
+        email:
           type: string
 
     Question:
