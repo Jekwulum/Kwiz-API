@@ -16,6 +16,15 @@ router.post('/logout',
 router.post('/reset-password',
   TokenService.verifyToken,
   validator("authValidators", "resetPassword"),
+  AuthController.changePassword
+);
+
+router.post('/forgot-password',
+  validator("authValidators", "forgotPassword"),
+  AuthController.forgotPasswordLink
+);
+
+router.get('/reset-forgot-password/:resetCode',
   AuthController.resetPassword
 );
 

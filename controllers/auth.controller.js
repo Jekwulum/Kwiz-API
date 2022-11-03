@@ -1,6 +1,11 @@
 const bcrypt = require('bcrypt');
 const config = process.env;
 const TokenService = require('../middlewares/helpers/services/token.service');
+const { cipherEncrypt, cipherDecrypt } = require('../middlewares/helpers/services/encryption.service');
+const { databaseError } = require('../middlewares/helpers/responses/database.response');
+const { generateCode } = require('../middlewares/utils/code_generator');
+const sendEmail = require('../middlewares/utils/sendEmail');
+const EncryptionStoreModel = require('../models/encryption.store.model');
 const TokenModel = require('../models/token.model');
 const UserModel = require('../models/user.model');
 
@@ -8,7 +13,7 @@ const AuthController = {
   login: async (req, res) => {
     const { email, password } = req.body;
     UserModel.findOne({ email }, async (error, dataExists) => {
-      if (error || !dataExists) res.status(400).json({ status: "FAILED", message: "Invalid login credentials" })
+      if (error || !dataExists) res.status(404).json({ status: "FAILED", message: "Invalid login credentials" })
       else {
         bcrypt.compare(password, dataExists.password, async (err, response) => {
           if (err || !response) res.status(400).json({ status: "FAILED", message: "Invalid login credentials" })
@@ -37,7 +42,7 @@ const AuthController = {
     })
   },
 
-  resetPassword: (req, res) => {
+  changePassword: (req, res) => {
     const userId = req.user['userId'];
     bcrypt.genSalt(Number(config.SALT_RATE), async (saltError, salt) => {
       if (saltError) res.status(400).json({ status: "FAILED", message: saltError });
@@ -56,6 +61,76 @@ const AuthController = {
         });
       }
     });
+  },
+
+  forgotPasswordLink: async (req, res) => {
+    try {
+      let email = req.body.email
+      UserModel.findOne({ email }, async (error, userExists) => {
+        if (error || !userExists) res.status(404).json({ status: "FAILED", message: "user record not found" })
+        else {
+          let userRef = 'ClientUsers';
+          if (userExists.is_admin) userRef = 'AdminUsers';
+          const token = await TokenService.generateToken(userExists.userId, email, userRef);
+          const encryptedToken = cipherEncrypt(token);
+
+          EncryptionStoreModel.create({ cipher: encryptedToken.cipher, iv: encryptedToken.iv, key: encryptedToken.key }, async (err, doc) => {
+            if (err) res.status(500).json({ status: "FAILED", message: "Unable to store cipher data" })
+            else {
+              const resetLink = `${config.BASE_URL}/auth/reset-forgot-password/${encryptedToken.cipher}`;
+              const emailObj = { email: userExists.email, subject: "password reset", text: resetLink };
+              await sendEmail(emailObj);
+              res.status(200).json({ status: "SUCCESS", message: "password reset link sent to yout email address" });
+            }
+          });
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ status: "FAILED", message: "an error occurred" });
+    }
+  },
+
+  resetPassword: async (req, res) => {
+    try {
+      EncryptionStoreModel.findOneAndDelete({ cipher: req.params.resetCode }, async (error, validationData) => {
+        if (error || !validationData) return res.status(404).json({ status: "FAILED", message: "cipher not found" });
+        else {
+          let data = { key: validationData.key, iv: validationData.iv, cipher: validationData['cipher'] };
+          const decryptedValue = cipherDecrypt(data);
+          TokenModel.findOneAndDelete({ token: decryptedValue }, async (err, verifiedTokenData) => {
+            if (err) return res.status(404).json({ status: "FAILED", message: "token not found" });
+            else {
+              bcrypt.genSalt(Number(config.SALT_RATE), (saltError, salt) => {
+                if (saltError) { res.status(500).json({ status: "FAILED", message: "Salt Error" }) }
+                else {
+                  const password = generateCode();
+                  bcrypt.hash(password, salt, async (hashError, hash) => {
+                    if (hashError) res.status(400).json({ status: "FAILED", message: `FAILURE, Password not found ${hashError}` })
+                    else {
+                      UserModel.findOneAndUpdate({ userId: verifiedTokenData['userId'] }, { password: hash }, { new: true }, async (err, doc) => {
+                        
+                        if (err) {
+                          const response = databaseError(err);
+                          res.status(response.status).json({ status: "FAILED", message: response.message });
+                        }
+                        else {
+                          const emailObj = { email: doc.email, subject: "password changed", text: `New password: ${password}` };
+                          await sendEmail(emailObj);
+                          res.status(200).json({ status: "SUCCESS", message: "password successfully changed, check email" })
+                        };
+                      });
+                    }
+                  })
+                }
+              })
+            }
+          });
+        }
+      })
+    } catch (error) {
+
+    }
   }
 };
 

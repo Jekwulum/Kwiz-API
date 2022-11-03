@@ -18,7 +18,7 @@ const UserController = {
           if (saltError) { console.log("salt error::: ", saltError) }
           else {
             bcrypt.hash(req.body.password, salt, async (hashError, hash) => {
-              if (hashError) res.status(400).json({ status: "FAILED", message: `FAILURE, Password not found ${error}` })
+              if (hashError) res.status(400).json({ status: "FAILED", message: `FAILURE, Password not found ${hashError}` })
               else {
                 let data = req.body;
                 let userRef = 'ClientUsers';
