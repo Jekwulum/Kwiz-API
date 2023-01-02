@@ -1,10 +1,17 @@
-const { array } = require('joi');
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const Schema = mongoose.Schema;
 
 const questionsSchema = new Schema({
-  userId: {
+  userId: { // this is also the quizId
+    type: String,
+    required: true
+  },
+  quizId: {
+    type: String,
+    required: true
+  },
+  code: { // ID for each question
     type: String,
     required: true
   },
@@ -16,21 +23,14 @@ const questionsSchema = new Schema({
     type: String,
     required: true
   },
-  options: {
-    type: [String],
-    required: true
-  },
   points: {
     type: Number,
     required: true
   },
-  code: {
-    type: String,
+  options: {
+    type: [String],
     required: true
   },
-  players: {
-    type: [{ player: { type: String, unique: true }, score: { type: Number } }]
-  }
 }, {
   timestamps: true
 });
