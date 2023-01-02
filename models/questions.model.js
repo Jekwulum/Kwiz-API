@@ -7,7 +7,11 @@ const questionsSchema = new Schema({
     type: String,
     required: true
   },
-  code: {
+  quizId: {
+    type: String,
+    required: true
+  },
+  code: { // ID for each question
     type: String,
     required: true
   },
@@ -17,6 +21,10 @@ const questionsSchema = new Schema({
   },
   answer: {
     type: String,
+    required: true
+  },
+  points: {
+    type: Number,
     required: true
   },
   options: {

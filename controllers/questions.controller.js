@@ -1,6 +1,7 @@
 const { generateCode } = require('../middlewares/utils/code_generator');
 const { databaseError } = require('../middlewares/helpers/responses/database.response');
 const QuestionModel = require('../models/questions.model');
+const QuizTitlesModel = require('../models/quiz.title.model');
 
 const QuestionController = {
   get: async (req, res) => {
@@ -11,53 +12,65 @@ const QuestionController = {
   getByCode: async (req, res) => {
     QuestionModel.findOne({ code: req.params.code }, async (err, doc) => {
       if (err || !doc) res.status(404).json({ message: "Record not found", status: "FAILED" })
-      else res.status(200).json({status: "SUCCESS", message: "Successfully fetched record", data: doc});
+      else res.status(200).json({ status: "SUCCESS", message: "Successfully fetched record", data: doc });
     });
   },
 
   create: async (req, res) => {
-    let data = req.body;
-    if (!data.options.includes(data.answer)) return res.status(400).json({ status: "FAILED", message: "Answer not in options" });
+    let quizData = [];
+    let quizId = generateCode();
 
-    data.userId = req.user.userId;
-    data.code = generateCode();
+    for (let data of req.body.questions) {
+      if (!data.options.includes(data.answer)) return res.status(400).json({ status: "FAILED", message: `Answer: '${data.answer}' not in options: [${data.options}]` });
 
-    try {
-      let question = new QuestionModel(data);
-      await question.save(async (err, dataObject) => {
-        if (err) {
-          const response = databaseError(err);
-          res.status(response.status).json({ status: "FAILED", message: response.message });
-        } else res.status(201).json({ status: "SUCCESS", message: "Question added", data: question });
-      })
-    } catch (error) {
-      res.status(500).json({ status: "FAILED", message: error });
-    }
-  },
+      data.quizId = quizId;
+      data.userId = req.user.userId;
+      data.code = generateCode();
+      quizData.push(data);
+    };
 
-  addPlayers: async (req, res) => {
-    QuestionModel.findOne({ code: req.params.code }, async (err, doc) => {
-      if (err || !doc) res.status(404).json({ message: "Record not found", status: "FAILED" })
-      else {
-        let otherPlayers = [];
-        let playersArr = doc.players;
-        for (let player of req.body.players) {
-          if (!playersArr.some(playerObj => playerObj.player === player)) {
-            let newPlayer = { player, score: 0 }
-            playersArr.push(newPlayer);
-          } else otherPlayers.push(player);
-        };
-
-        QuestionModel.updateOne({ code: req.params.code }, { players: playersArr }, (err) => {
-          if (err) res.status(400).json({ status: "FAILED", message: err + "here" })
-          else {
-            let message = "Player(s) successfully added. ";
-            if (otherPlayers.length > 0) message += `${otherPlayers.join(', ')} already selected`;
-            res.status(200).json({ status: "SUCCESS", message });
+    QuestionModel.insertMany(quizData, (err, docs) => {
+      if (err) {
+        const response = databaseError(err);
+        return res.status(response.status).json({ status: "FAILED", message: response.message });
+      } else {
+        QuizTitlesModel.create({ code: quizId, title: req.body.title }, (error, doc) => {
+          if (error) {
+            console.log(err);
+          } else {
+            let data = {};
+            data['title'] = doc.title;
+            data['questions'] = docs;
+            return res.status(201).json({ status: "SUCCESS", message: "Question(s) added", data });
           }
         });
       }
     });
+  },
+
+  addPlayers: async (req, res) => {
+    // QuestionModel.findOne({ code: req.params.code }, async (err, doc) => {
+    //   if (err || !doc) res.status(404).json({ message: "Record not found", status: "FAILED" })
+    //   else {
+    //     let otherPlayers = [];
+    //     let playersArr = doc.players;
+    //     for (let player of req.body.players) {
+    //       if (!playersArr.some(playerObj => playerObj.player === player)) {
+    //         let newPlayer = { player, score: 0 }
+    //         playersArr.push(newPlayer);
+    //       } else otherPlayers.push(player);
+    //     };
+
+    //     QuestionModel.updateOne({ code: req.params.code }, { players: playersArr }, (err) => {
+    //       if (err) res.status(400).json({ status: "FAILED", message: err + "here" })
+    //       else {
+    //         let message = "Player(s) successfully added. ";
+    //         if (otherPlayers.length > 0) message += `${otherPlayers.join(', ')} already selected`;
+    //         res.status(200).json({ status: "SUCCESS", message });
+    //       }
+    //     });
+    //   }
+    // });
   },
 
   updateScores: async (req, res) => {

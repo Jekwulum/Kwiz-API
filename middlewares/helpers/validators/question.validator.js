@@ -2,10 +2,16 @@ const Joi = require('joi');
 
 
 const addQuestion = Joi.object({
-  question: Joi.string().required(),
-  answer: Joi.string().required(),
-  options: Joi.array().required(),
-});
+  title: Joi.string().required(),
+  questions: Joi.array().items(
+    Joi.object({
+      question: Joi.string().required(),
+      answer: Joi.string().required(),
+      points: Joi.number().required(),
+      options: Joi.array().required(),
+    })
+  )
+})
 
 const updateQuestion = Joi.object({
   players: Joi.array().required()

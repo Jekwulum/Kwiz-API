@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const quizTitleSchema = new Schema({
   code: {
     type: String,
+    unique: true,
     required: true
   },
   title: {
@@ -12,3 +13,8 @@ const quizTitleSchema = new Schema({
     required: true
   }
 });
+
+quizTitleSchema.plugin(uniqueValidator);
+const QuizTitles = mongoose.model('QuizTitles', quizTitleSchema);
+
+module.exports = QuizTitles;

@@ -9,8 +9,9 @@ const playersSchema = new Schema({
   },
   playerId: {
     type: String,
+    required: true
   },
-  points: {
+  score: {
     type: Number,
     default: 0
   }
