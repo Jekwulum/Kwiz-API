@@ -17,4 +17,8 @@ const updateQuestion = Joi.object({
   players: Joi.array().required()
 });
 
-module.exports = { addQuestion, updateQuestion };
+const addPlayer = Joi.object({
+  playerId: Joi.string().required()
+});
+
+module.exports = { addPlayer, addQuestion, updateQuestion };

@@ -13,20 +13,40 @@ router.get('/:code',
   (req, res) => QuestionController.getByCode(req, res)
 );
 
+router.get('/fetch-by-quizId/:quizId',
+  // TokenService.verifyToken,
+  (req, res) => QuestionController.getByQuizId(req, res)
+);
+
+router.get('/fetch-by-userId/:userId',
+  TokenService.verifyToken,
+  (req, res) => QuestionController.getByUserId(req, res)
+);
+
 router.post('/',
   TokenService.verifyToken,
   validator("questionValidators", "addQuestion"),
   (req, res) => QuestionController.create(req, res)
 );
 
-router.patch('/add-players/:code',
-  TokenService.verifyToken,
-  validator("questionValidators", "updateQuestion"),
-  (req, res) => QuestionController.addPlayers(req, res)
+router.post('/player/:quizId',
+  // TokenService.verifyToken,
+  validator("questionValidators", "addPlayer"),
+  (req, res) => QuestionController.addPlayer(req, res)
 );
 
-router.patch('/update-scores/:code',
+router.get('/player/:quizId',
   TokenService.verifyToken,
+  (req, res) => QuestionController.getPlayersByQuizId(req, res)
+);
+
+router.get('/player/:quizId/:playerId',
+  TokenService.verifyToken,
+  (req, res) => QuestionController.getPlayerByQuizIdAndPlayerId(req, res)
+);
+
+router.patch('/player/update-score/:playerId/:quizId',
+  // TokenService.verifyToken,
   (req, res) => QuestionController.updateScores(req, res)
 );
 

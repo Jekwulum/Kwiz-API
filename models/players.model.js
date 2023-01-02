@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const playersSchema = new Schema({
   quizId: {
     type: String,
-    required: true
+    required: true,
   },
   playerId: {
     type: String,
