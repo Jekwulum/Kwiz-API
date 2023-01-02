@@ -3,7 +3,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 const Schema = mongoose.Schema;
 
 const questionsSchema = new Schema({
-  userId: {
+  userId: { // this is also the quizId
     type: String,
     required: true
   },
@@ -23,13 +23,6 @@ const questionsSchema = new Schema({
     type: [String],
     required: true
   },
-  // points: {
-  //   type: Number,
-  //   required: true
-  // },
-  // players: {
-  //   type: [{ player: { type: String, unique: true }, score: { type: Number } }]
-  // }
 }, {
   timestamps: true
 });
