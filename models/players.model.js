@@ -9,8 +9,7 @@ const playersSchema = new Schema({
   },
   playerId: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   score: {
     type: Number,
