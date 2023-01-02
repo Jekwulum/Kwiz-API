@@ -40,8 +40,13 @@ router.get('/player/:quizId',
   (req, res) => QuestionController.getPlayersByQuizId(req, res)
 );
 
-router.patch('/update-scores/:code',
+router.get('/player/:quizId/:playerId',
   TokenService.verifyToken,
+  (req, res) => QuestionController.getPlayerByQuizIdAndPlayerId(req, res)
+);
+
+router.patch('/update-scores/:code',
+  // TokenService.verifyToken,
   (req, res) => QuestionController.updateScores(req, res)
 );
 

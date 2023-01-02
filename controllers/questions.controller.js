@@ -109,6 +109,17 @@ const QuestionController = {
     })
   },
 
+  getPlayerByQuizIdAndPlayerId: async (req, res) => {
+    PlayersModel.findOne({ quizId: req.params.quizId, playerId: req.params.playerId }, (err, docs) => {
+      if (err) {
+        const response = databaseError(err);
+        return res.status(response.status).json({ status: "FAILED", message: response.message });
+      } else {
+        return res.status(200).json({ status: "SUCCESS", data: docs });
+      }
+    })
+  },
+
   updateScores: async (req, res) => {
     QuestionModel.findOne({ code: req.params.code }, async (err, doc) => {
       if (err || !doc) res.status(404).json({ message: "Record not found", status: "FAILED" })
