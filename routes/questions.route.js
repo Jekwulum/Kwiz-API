@@ -13,6 +13,16 @@ router.get('/:code',
   (req, res) => QuestionController.getByCode(req, res)
 );
 
+router.get('/fetch-by-quizId/:quizId',
+  TokenService.verifyToken,
+  (req, res) => QuestionController.getByQuizId(req, res)
+);
+
+router.get('/fetch-by-userId/:userId',
+  TokenService.verifyToken,
+  (req, res) => QuestionController.getByUserId(req, res)
+);
+
 router.post('/',
   TokenService.verifyToken,
   validator("questionValidators", "addQuestion"),

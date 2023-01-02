@@ -16,6 +16,20 @@ const QuestionController = {
     });
   },
 
+  getByQuizId: async (req, res) => {
+    QuestionModel.find({ quizId: req.params.quizId }, async (err, doc) => {
+      if (err || !doc) res.status(404).json({ message: "Records not found", status: "FAILED" })
+      else res.status(200).json({ status: "SUCCESS", message: "Successfully fetched records", data: doc });
+    });
+  },
+
+  getByUserId: async (req, res) => {
+    QuestionModel.find({ userID: req.params.userId }, async (err, doc) => {
+      if (err || !doc) res.status(404).json({ message: "Records not found", status: "FAILED" })
+      else res.status(200).json({ status: "SUCCESS", message: "Successfully fetched records", data: doc });
+    });
+  },
+
   create: async (req, res) => {
     let quizData = [];
     let quizId = generateCode();

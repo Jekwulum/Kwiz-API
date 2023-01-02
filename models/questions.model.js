@@ -3,11 +3,11 @@ const uniqueValidator = require('mongoose-unique-validator');
 const Schema = mongoose.Schema;
 
 const questionsSchema = new Schema({
-  userId: { // this is also the quizId
+  userId: { 
     type: String,
     required: true
   },
-  quizId: {
+  quizId: { // this is also the quizId
     type: String,
     required: true
   },
