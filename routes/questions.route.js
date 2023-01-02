@@ -29,10 +29,15 @@ router.post('/',
   (req, res) => QuestionController.create(req, res)
 );
 
-router.patch('/add-player/:quizId',
+router.post('/player/:quizId',
   // TokenService.verifyToken,
   validator("questionValidators", "addPlayer"),
   (req, res) => QuestionController.addPlayer(req, res)
+);
+
+router.get('/player/:quizId',
+  TokenService.verifyToken,
+  (req, res) => QuestionController.getPlayersByQuizId(req, res)
 );
 
 router.patch('/update-scores/:code',
