@@ -14,7 +14,7 @@ router.get('/:code',
 );
 
 router.get('/fetch-by-quizId/:quizId',
-  TokenService.verifyToken,
+  // TokenService.verifyToken,
   (req, res) => QuestionController.getByQuizId(req, res)
 );
 
@@ -29,10 +29,10 @@ router.post('/',
   (req, res) => QuestionController.create(req, res)
 );
 
-router.patch('/add-players/:code',
-  TokenService.verifyToken,
-  validator("questionValidators", "updateQuestion"),
-  (req, res) => QuestionController.addPlayers(req, res)
+router.patch('/add-player/:quizId',
+  // TokenService.verifyToken,
+  validator("questionValidators", "addPlayer"),
+  (req, res) => QuestionController.addPlayer(req, res)
 );
 
 router.patch('/update-scores/:code',

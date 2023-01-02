@@ -1,5 +1,6 @@
 const { generateCode } = require('../middlewares/utils/code_generator');
 const { databaseError } = require('../middlewares/helpers/responses/database.response');
+const PlayersModel = require('../models/players.model');
 const QuestionModel = require('../models/questions.model');
 const QuizTitlesModel = require('../models/quiz.title.model');
 
@@ -62,7 +63,7 @@ const QuestionController = {
     });
   },
 
-  addPlayers: async (req, res) => {
+  addPlayer: async (req, res) => {
     // QuestionModel.findOne({ code: req.params.code }, async (err, doc) => {
     //   if (err || !doc) res.status(404).json({ message: "Record not found", status: "FAILED" })
     //   else {
@@ -85,6 +86,16 @@ const QuestionController = {
     //     });
     //   }
     // });
+    let playerId = req.body.playerId;
+    PlayersModel.create({ quizId: req.params.quizId, playerId }, (err, doc) => {
+      if (err) {
+        const response = databaseError(err);
+        return res.status(response.status).json({ status: "FAILED", message: response.message });
+      }
+      else {
+        return res.status(201).json({ status: "SUCCESS", message: "Player added", data: doc });
+      }
+    });
   },
 
   updateScores: async (req, res) => {

@@ -5,11 +5,12 @@ const Schema = mongoose.Schema;
 const playersSchema = new Schema({
   quizId: {
     type: String,
-    required: true
+    required: true,
   },
   playerId: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   score: {
     type: Number,
