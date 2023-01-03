@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const path = require('path');
 global.appRoot = path.resolve(__dirname);
-global.appName = `School Management API`;
+global.appName = `Kwiz-API`;
 
 const app = require('./app');
 const port = process.env.PORT || 4000;
