@@ -14,7 +14,7 @@ const tokenService = {
     TokenModel.create({ token, userId, UsersRef }, (err, doc) => {
       if (err) throw err;
     });
-
+    
     return token;
   },
 

@@ -63,7 +63,7 @@ const UserController = {
 
   getById: async (req, res) => {
     const data = await UserModel.findOne({ userId: req.params.id });
-    delete data.password;
+    // delete data.password;
     if (data) res.status(200).json({ status: "SUCCESS", message: "Successfully fetched data", data })
     else res.status(400).json({ status: "FAILED", message: "Record not found" });
   },
