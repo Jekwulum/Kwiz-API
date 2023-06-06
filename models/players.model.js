@@ -17,6 +17,7 @@ const playersSchema = new Schema({
   }
 });
 
+playersSchema.index({ quizId: 1, playerId: 1 }, { unique: true });
 playersSchema.plugin(uniqueValidator);
 const Players = mongoose.model('Players', playersSchema);
 

@@ -11,7 +11,6 @@ const validationError = error => {
 
 const databaseError = error => {
 
-
   const message = (error === null || typeof error === undefined)
     ? 'FAILURE, Internal Server Error' : (error.name === "ValidationError")
       ? validationError(error) : error.errmsg;

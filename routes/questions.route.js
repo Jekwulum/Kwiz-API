@@ -41,7 +41,7 @@ router.get('/player/:quizId',
 );
 
 router.get('/player/:quizId/:playerId',
-  TokenService.verifyToken,
+  // TokenService.verifyToken,
   (req, res) => QuestionController.getPlayerByQuizIdAndPlayerId(req, res)
 );
 

@@ -56,7 +56,7 @@ const QuestionController = {
             let data = {};
             data['title'] = doc.title;
             data['questions'] = docs;
-            return res.status(201).json({ status: "SUCCESS", message: "Question(s) added", data });
+            return res.status(201).json({ status: "SUCCESS", message: "Quiz added", data });
           }
         });
       }
@@ -64,28 +64,6 @@ const QuestionController = {
   },
 
   addPlayer: async (req, res) => {
-    // QuestionModel.findOne({ code: req.params.code }, async (err, doc) => {
-    //   if (err || !doc) res.status(404).json({ message: "Record not found", status: "FAILED" })
-    //   else {
-    //     let otherPlayers = [];
-    //     let playersArr = doc.players;
-    //     for (let player of req.body.players) {
-    //       if (!playersArr.some(playerObj => playerObj.player === player)) {
-    //         let newPlayer = { player, score: 0 }
-    //         playersArr.push(newPlayer);
-    //       } else otherPlayers.push(player);
-    //     };
-
-    //     QuestionModel.updateOne({ code: req.params.code }, { players: playersArr }, (err) => {
-    //       if (err) res.status(400).json({ status: "FAILED", message: err + "here" })
-    //       else {
-    //         let message = "Player(s) successfully added. ";
-    //         if (otherPlayers.length > 0) message += `${otherPlayers.join(', ')} already selected`;
-    //         res.status(200).json({ status: "SUCCESS", message });
-    //       }
-    //     });
-    //   }
-    // });
     let playerId = req.body.playerId;
     PlayersModel.create({ quizId: req.params.quizId, playerId }, (err, doc) => {
       if (err) {
@@ -114,7 +92,10 @@ const QuestionController = {
       if (err) {
         const response = databaseError(err);
         return res.status(response.status).json({ status: "FAILED", message: response.message });
-      } else {
+      } else if (!docs) {
+        return res.status(404).json({ status: "FAILED", message: "Player not found" });
+      }
+      else {
         return res.status(200).json({ status: "SUCCESS", data: docs });
       }
     })
@@ -122,26 +103,26 @@ const QuestionController = {
 
   updateScores: async (req, res) => {
     let { playerId, quizId } = req.params;
-    let quizPayload = req.body;
-    let playerScore = 0;
+    let { score } = req.body;
+    // let playerScore = 0;
     PlayersModel.findOne({ playerId, quizId }, (err, playerDoc) => {
       if (err || !playerDoc) res.status(404).json({ message: "Record not found", status: "FAILED" })
       else {
         QuestionModel.find({ quizId }, (err, docs) => {
           if (err || !docs) res.status(404).json({ message: "Records not found", status: "FAILED" })
           else {
-            for (let quizPayloadObj of quizPayload) {
-              for (let docsObj of docs) {
-                if (quizPayloadObj.code === docsObj.code) {
-                  if (quizPayloadObj.answer.toLowerCase() === docsObj.answer.toLowerCase()) {
-                    playerDoc.score += docsObj.points;
-                  }
-                  playerScore = playerDoc.score;
-                }
-              }
-            }
+            // for (let quizPayloadObj of quizPayload) {
+            //   for (let docsObj of docs) {
+            //     if (quizPayloadObj.code === docsObj.code) {
+            //       if (quizPayloadObj.answer.toLowerCase() === docsObj.answer.toLowerCase()) {
+            //         playerDoc.score += docsObj.points;
+            //       }
+            //       playerScore = playerDoc.score;
+            //     }
+            //   }
+            // }
 
-            PlayersModel.updateOne({ playerId, quizId }, { score: playerScore }, (err) => {
+            PlayersModel.updateOne({ playerId, quizId }, { score }, (err) => {
               if (err) res.status(400).json({ status: "FAILED", message: err })
               else return res.status(200).json({ status: "SUCCESS", message: "Player Score successfully updated" });
             });
