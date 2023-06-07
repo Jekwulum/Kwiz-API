@@ -1,4 +1,5 @@
 const { generateCode } = require('../middlewares/utils/code_generator');
+const { generateStats } = require('../middlewares/utils/statsGenerator');
 const { databaseError } = require('../middlewares/helpers/responses/database.response');
 const PlayersModel = require('../models/players.model');
 const QuestionModel = require('../models/questions.model');
@@ -29,6 +30,12 @@ const QuestionController = {
       if (err || !doc) res.status(404).json({ message: "Records not found", status: "FAILED" })
       else res.status(200).json({ status: "SUCCESS", message: "Successfully fetched records", data: doc });
     });
+  },
+
+  getQuizTitles: async (req, res) => {
+    console.log("here");
+    const data = await QuizTitlesModel.find();
+    res.status(200).json({ status: "SUCCESS", message: "Successfully fetched all data", data });
   },
 
   create: async (req, res) => {
@@ -129,6 +136,26 @@ const QuestionController = {
 
           }
         });
+      }
+    });
+  },
+
+  stats: async (req, res) => {
+    QuestionModel.find((err, questionsResults) => {
+      if (err || !questionsResults) res.status(400).json({ message: "No questions records found", status: "FAILED" })
+      else {
+        QuizTitlesModel.find((err, titlesResults) => {
+          if (err || !titlesResults) res.status(400).json({ message: "No titles records found", status: "FAILED" })
+          else {
+            PlayersModel.find((err, playersResults) => {
+              if (err || !playersResults) res.status(400).json({ message: "No players records found", status: "FAILED" })
+              else {
+                const [questions, titles, players] = generateStats(questionsResults, titlesResults, playersResults);
+                res.status(200).json({ status: "SUCCESS", message: "fetched stats", data: { questions, titles, players } });
+              }
+            })
+          }
+        })
       }
     });
   }
