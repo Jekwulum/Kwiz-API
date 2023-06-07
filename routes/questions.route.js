@@ -56,5 +56,5 @@ router.get('/titles/quiz-title/', TokenService.verifyToken,
   (req, res) => QuestionController.getQuizTitles(req, res)
 );
 
-router.get('/stats/user-stats', TokenService.verifyToken, QuestionController.stats);
+router.get('/stats/user-stats/:userId', TokenService.verifyToken, QuestionController.stats);
 module.exports = router;

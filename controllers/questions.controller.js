@@ -141,7 +141,7 @@ const QuestionController = {
   },
 
   stats: async (req, res) => {
-    QuestionModel.find((err, questionsResults) => {
+    QuestionModel.find({ userId: req.user.userId }, (err, questionsResults) => {
       if (err || !questionsResults) res.status(400).json({ message: "No questions records found", status: "FAILED" })
       else {
         QuizTitlesModel.find((err, titlesResults) => {
